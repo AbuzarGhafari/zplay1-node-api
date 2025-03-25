@@ -3,6 +3,7 @@ import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
 import puppeteer from "puppeteer";
+import { chromium } from "playwright";
 
 dotenv.config();
 
@@ -12,6 +13,19 @@ const BASE_URL = "https://zplay1.in/sports/api/v1";
 
 app.use(cors());
 
+
+const scrapeChromiumData = async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+
+  await page.goto("https://zplay1.in/sports/api/v1/events/matches/inplay", { waitUntil: "networkidle" });
+
+  const jsonResponse = await page.evaluate(() => document.body.innerText);
+  
+  console.log(JSON.parse(jsonResponse)); // Parse JSON data
+
+  await browser.close();
+};
 
 const scrapeData = async () => {
   const browser = await puppeteer.launch({ headless: "new" });
@@ -27,8 +41,9 @@ const scrapeData = async () => {
 
   const data = await page.content();
   console.log(data);
-
+  
   await browser.close();
+  return data;
 };
 
 const fetchInPlayMatches = async () => {
@@ -47,6 +62,15 @@ const fetchInPlayMatches = async () => {
     console.error("Error:", error.response?.data || error.message);
   }
 };
+
+app.get("/api/scrape-chromium-data", async (req, res) => {
+  try {
+    const response = await scrapeChromiumData();
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch scrape chromium data" });
+  }
+});
 
 app.get("/api/scrape", async (req, res) => {
   try {
