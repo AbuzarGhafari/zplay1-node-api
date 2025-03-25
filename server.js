@@ -11,6 +11,34 @@ const BASE_URL = "https://zplay1.in/sports/api/v1";
 
 app.use(cors());
 
+const fetchInPlayMatches = async () => {
+  try {
+    const response = await axios.get("https://zplay1.in/sports/api/v1/events/matches/inplay", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Referer": "https://zplay1.in/",
+        "Origin": "https://zplay1.in/",
+      }
+    });
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    console.error("Error:", error.response?.data || error.message);
+  }
+};
+
+
+
+app.get("/api/play-matches", async (req, res) => {
+  try {
+    const response = await fetchInPlayMatches();
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch play-matches" });
+  }
+});
+
 // 1. Get Sport List
 app.get("/api/sports", async (req, res) => {
   try {
