@@ -2,6 +2,7 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import dotenv from "dotenv";
+import puppeteer from "puppeteer";
 
 dotenv.config();
 
@@ -10,6 +11,25 @@ const PORT = process.env.PORT || 3000;
 const BASE_URL = "https://zplay1.in/sports/api/v1";
 
 app.use(cors());
+
+
+const scrapeData = async () => {
+  const browser = await puppeteer.launch({ headless: "new" });
+  const page = await browser.newPage();
+  
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+  );
+
+  await page.goto("https://zplay1.in/sports/api/v1/events/matches/inplay", {
+    waitUntil: "networkidle2",
+  });
+
+  const data = await page.content();
+  console.log(data);
+
+  await browser.close();
+};
 
 const fetchInPlayMatches = async () => {
   try {
@@ -28,6 +48,14 @@ const fetchInPlayMatches = async () => {
   }
 };
 
+app.get("/api/scrape", async (req, res) => {
+  try {
+    const response = await scrapeData();
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch scrape data" });
+  }
+});
 
 
 app.get("/api/play-matches", async (req, res) => {
