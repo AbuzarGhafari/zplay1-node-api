@@ -17,17 +17,13 @@ app.get("/", (req, res) => {
 
 
 app.get('/api/proxy', async (req, res) => {
-    try {
-        const response = await axios.get('https://zplay1.in/sports/api/v1/events/matches/inplay', {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
-        });
-        res.json(response.data);
-    } catch (error) {
-        console.error('Error fetching API:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Failed to fetch API' });
-    }
+  const response = await axios.get('https://zplay1.in/sports/api/v1/events/matches/inplay', {
+      headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+  });
+  res.json(response.data);
+  
 });
 
 
