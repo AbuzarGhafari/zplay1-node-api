@@ -16,11 +16,11 @@ app.use(cors());
 // 1. Get Sport List
 
 app.get("/api/test", async (req, res) => {
+  // Step 1: Register the domain by calling site-status-version API
+  const resigter = await axios.get(`https://zplay1.in/api/site-status-version?domain=http://141.136.42.134/`);
+  console.log(resigter);
   try {
-    // Step 1: Register the domain by calling site-status-version API
-    const resigter = await axios.get(`https://zplay1.in/api/site-status-version?domain=http://141.136.42.134/`);
 
-    console.log(resigter);
     
     // Step 2: Call the actual sports API
     const response = await axios.get(`${BASE_URL}/sports/management/getSport`);
