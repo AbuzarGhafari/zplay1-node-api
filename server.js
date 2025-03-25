@@ -1,38 +1,21 @@
 import express from "express";
+import path from "path";
 import axios from "axios";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const BASE_URL = "https://zplay1.in/sports/api/v1";
-
-app.use(cors());
+const PORT = 3000; // Change port if needed
 
 
+// Fix for __dirname not defined in CommonJS
+const __dirname = path.resolve();
 
-// 1. Get Sport List
 
-app.get("/api/test", async (req, res) => {
-  // Step 1: Register the domain by calling site-status-version API
-  const resigter = await axios.get(`https://zplay1.in/api/site-status-version?domain=http://141.136.42.134/`);
-  console.log(resigter);
-  try {
-
-    
-    // Step 2: Call the actual sports API
-    const response = await axios.get(`${BASE_URL}/sports/management/getSport`);
-
-    // Step 3: Send JSON response to the client
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ error: "Failed to fetch sports data" });
-  }
+// Serve the index.html file
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

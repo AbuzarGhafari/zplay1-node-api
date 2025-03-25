@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Call Example</title>
+</head>
+<body>
+    <h1>API Call in Browser</h1>
+    <button onclick="fetchData()">Fetch API</button>
+    <button onclick="fetchSports()">Get Sports</button>
+    <pre id="output"></pre>
+    <pre id="sports"></pre>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch("https://zplay1.in/api/site-status-version?domain=http://141.136.42.134/", {
+                    method: "GET",
+                    headers: {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                        "Referer": "https://www.gamewin247.com/",
+                        "Origin": "https://www.gamewin247.com/"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById("output").textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+
+    
+<script>
+    async function fetchSports() {
+        try {
+            const response = await fetch("https://zplay1.in/sports/api/v1/events/matches/inplay", {
+                method: "GET",
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Referer": "https://www.gamewin247.com/",
+                    "Origin": "https://www.gamewin247.com/"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            document.getElementById("sports").textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+            document.getElementById("sports").textContent = "Error: " + error.message;
+        }
+    }
+</script>
+</body>
+</html>
